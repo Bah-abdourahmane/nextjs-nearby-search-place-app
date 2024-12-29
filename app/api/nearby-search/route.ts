@@ -1,15 +1,17 @@
 import axios from "axios";
-import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export  async function GET(req: NextApiRequest, res: NextApiResponse) {
-  
-  const { category, lat, lng } = req.query;
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const category = searchParams.get("category");
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
 
   if (!category || !lat || !lng) {
-    return res
-      .status(400)
-      .json({ error: "Missing required parameters: category, lat, lng" });
+    return NextResponse.json(
+      { error: "Missing required parameters: category, lat, lng" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -26,9 +28,12 @@ export  async function GET(req: NextApiRequest, res: NextApiResponse) {
       }
     );
 
-    return NextResponse.json(response.data)
+    return NextResponse.json(response.data);
   } catch (error) {
     console.error("Error fetching nearby search data:", error);
-    NextResponse.json({ error: "Failed to fetch nearby search data." });
+    return NextResponse.json(
+      { error: "Failed to fetch nearby search data." },
+      { status: 500 }
+    );
   }
 }

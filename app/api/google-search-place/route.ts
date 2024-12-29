@@ -1,7 +1,7 @@
 import axios from "axios";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url); // Extraction des paramètres de requête
   const searchtext = searchParams.get("searchtext");
   const lat = searchParams.get("lat");
